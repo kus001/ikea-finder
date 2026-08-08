@@ -228,44 +228,34 @@
     function findNearestIKEA() {
       const btn = document.getElementById('locateBtn');
 
-      if (!navigator.geolocation) {
-        alert("Geolocation is not supported by your browser.");
-        return;
-      }
+      // Hardcoded location (Mississauga, ON)
+      const userLat = 43.5890;
+      const userLon = -79.6441;
 
-      btn.innerText = "Locating...";
+      btn.innerText = "Loading...";
       btn.disabled = true;
 
-      navigator.geolocation.getCurrentPosition((position) => {
-        const userLat = position.coords.latitude;
-        const userLon = position.coords.longitude;
-
-        // Calculate distance & times for all stores
-        const storesWithData = ikeaStores.map(store => {
-          const dist = calculateDistance(userLat, userLon, store.lat, store.lon);
-          const driveTime = Math.round((dist / 40) * 60); 
-          const isOpen = isStoreOpen(store.open, store.close);
-          return { ...store, distance: dist, driveTime, isOpen };
-        });
-
-        // Sort by distance
-        storesWithData.sort((a, b) => a.distance - b.distance);
-
-        const closest = storesWithData[0];
-        targetBearing = calculateBearing(userLat, userLon, closest.lat, closest.lon);
-
-        // Render List & Map
-        renderStoresList(storesWithData);
-        renderMap(userLat, userLon, storesWithData);
-        startCompassHUD();
-
-        btn.innerText = "REFRESH LOCATION";
-        btn.disabled = false;
-      }, () => {
-        alert("Location access denied!");
-        btn.innerText = "FIND STORES NEAR ME";
-        btn.disabled = false;
+      // Calculate distance & times for all stores
+      const storesWithData = ikeaStores.map(store => {
+        const dist = calculateDistance(userLat, userLon, store.lat, store.lon);
+        const driveTime = Math.round((dist / 40) * 60); 
+        const isOpen = isStoreOpen(store.open, store.close);
+        return { ...store, distance: dist, driveTime, isOpen };
       });
+
+      // Sort by distance
+      storesWithData.sort((a, b) => a.distance - b.distance);
+
+      const closest = storesWithData[0];
+      targetBearing = calculateBearing(userLat, userLon, closest.lat, closest.lon);
+
+      // Render List & Map
+      renderStoresList(storesWithData);
+      renderMap(userLat, userLon, storesWithData);
+      startCompassHUD();
+
+      btn.innerText = "REFRESH LOCATION";
+      btn.disabled = false;
     }
 
     function startCompassHUD() {
@@ -275,11 +265,17 @@
         DeviceOrientationEvent.requestPermission().then(response => {
           if (response === 'granted') {
             window.addEventListener('deviceorientation', handleOrientation, true);
+            console.log("✅ Compass permission granted!");
+          } else {
+            console.log("⚠️ Compass permission denied");
           }
+        }).catch(err => {
+          console.error("Compass error:", err);
         });
       } else {
-        window.addEventListener('deviceorientationabsolute', handleOrientation, true) ||
+        window.addEventListener('deviceorientationabsolute', handleOrientation, true);
         window.addEventListener('deviceorientation', handleOrientation, true);
+        console.log("✅ Compass activated (Android/non-iOS)");
       }
     }
 
@@ -327,6 +323,13 @@
       const mapDiv = document.getElementById('map');
       mapDiv.style.display = 'block';
 
+      // Check if Leaflet loaded
+      if (typeof L === 'undefined') {
+        console.error('❌ Leaflet library not loaded');
+        mapDiv.innerHTML = '<p style="padding: 20px; color: red;">⚠️ Map failed to load. Check your internet connection.</p>';
+        return;
+      }
+
       if (map) map.remove(); 
 
       map = L.map('map').setView([userLat, userLon], 10);
@@ -336,13 +339,15 @@
       }).addTo(map);
 
       L.marker([userLat, userLon]).addTo(map)
-        .bindPopup("<b>You are here!</b>")
+        .bindPopup("<b>You are here! 📍</b>")
         .openPopup();
 
       stores.forEach(store => {
         L.marker([store.lat, store.lon]).addTo(map)
           .bindPopup(`<b>${store.name}</b><br>${store.distance.toFixed(1)} km away`);
       });
+
+      console.log("✅ Map loaded successfully!");
     }
 
     function calculateMeatballs() {
