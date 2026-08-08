@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>GTA IKEA Ultimate Meatball Radar 🧆</title>
+  <title>GTA IKEA Ultimate Radar</title>
   
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   
@@ -155,7 +155,7 @@
 <body>
 
   <div class="container">
-    <h1>🧆 IKEA Meatball Radar</h1>
+    <h1> IKEA Radar</h1>
     <p style="text-align: center;">Locate stores, check live status, and calculate your feast.</p>
     
     <button class="btn" id="locateBtn" onclick="findNearestIKEA()">FIND STORES NEAR ME</button>
@@ -163,20 +163,6 @@
     <div id="map"></div>
 
     <div id="resultsList"></div>
-
-    <div class="calculator">
-      <h3>🧆 Meatball Calculator</h3>
-      <label>How many people?</label>
-      <input type="number" id="peopleCount" value="2" min="1" onchange="calculateMeatballs()" />
-
-      <label>Hunger Level:</label>
-      <select id="hungerLevel" onchange="calculateMeatballs()">
-        <option value="8">Light (8 meatballs/person)</option>
-        <option value="12" selected>Moderate (12 meatballs/person)</option>
-        <option value="20">Starving (20 meatballs/person)</option>
-      </select>
-
-      <div id="calcOutput"><strong>Total needed:</strong> 24 meatballs, 2 soft serves!</div>
     </div>
   </div>
 
@@ -348,16 +334,6 @@
       });
 
       console.log("✅ Map loaded successfully!");
-    }
-
-    function calculateMeatballs() {
-      const people = document.getElementById('peopleCount').value || 1;
-      const hunger = document.getElementById('hungerLevel').value;
-      const totalMeatballs = people * hunger;
-      const totalIceCream = people;
-
-      document.getElementById('calcOutput').innerHTML = 
-        `<strong>Total needed:</strong> ${totalMeatballs} meatballs & ${totalIceCream} soft serve cone(s)!`;
     }
   </script>
 </body>
