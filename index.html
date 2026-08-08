@@ -214,14 +214,14 @@
     function findNearestIKEA() {
       const btn = document.getElementById('locateBtn');
 
-      // Hardcoded location (Mississauga, ON)
+      // hardcoded location
       const userLat = 43.65558261401592;
       const userLon = -79.38707778759117;
 
       btn.innerText = "Loading...";
       btn.disabled = true;
 
-      // Calculate distance & times for all stores
+      // calculate distance & times for all stores
       const storesWithData = ikeaStores.map(store => {
         const dist = calculateDistance(userLat, userLon, store.lat, store.lon);
         const driveTime = Math.round((dist / 40) * 60); 
