@@ -166,7 +166,7 @@
     </div>
   </div>
 
-  <div class="compass-hud" id="compassHud" title="Pointing to nearest IKEA">
+  <div class="compass-hud" id="compassHud" title="Tap for detailed compass" onclick="goToDetailedCompass()" style="cursor: pointer;">
     <div class="compass-arrow" id="compassArrow"></div>
   </div>
 
@@ -183,6 +183,11 @@
 
     let map = null;
     let targetBearing = 0;
+
+    function goToDetailedCompass() {
+      // Replace with your actual Vercel compass app URL
+      window.open('https://ikea-compass.vercel.app/', '_blank');
+    }
 
     function calculateDistance(lat1, lon1, lat2, lon2) {
       const R = 6371;
@@ -224,7 +229,7 @@
       // calculate distance & times for all stores
       const storesWithData = ikeaStores.map(store => {
         const dist = calculateDistance(userLat, userLon, store.lat, store.lon);
-        const driveTime = Math.round((dist / 40) * 60); 
+        const driveTime = Math.round((dist / 23) * 60); 
         const isOpen = isStoreOpen(store.open, store.close);
         return { ...store, distance: dist, driveTime, isOpen };
       });
@@ -282,7 +287,7 @@
 
     function renderStoresList(stores) {
       const listDiv = document.getElementById('resultsList');
-      listDiv.innerHTML = "<h3>Nearest Locations:</h3>";
+      listDiv.innerHTML = "<h3>Nearest Locations:</h3><p style='font-size: 0.85rem; color: #666; margin-bottom: 10px;'>⏱️ Times are approximate and may vary with traffic</p>";
 
       stores.forEach((store, idx) => {
         const isClosest = idx === 0;
