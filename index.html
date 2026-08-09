@@ -224,7 +224,7 @@
       // calculate distance & times for all stores
       const storesWithData = ikeaStores.map(store => {
         const dist = calculateDistance(userLat, userLon, store.lat, store.lon);
-        const driveTime = Math.round((dist / 23) * 60); 
+        const driveTime = Math.round((dist / 40) * 60); 
         const isOpen = isStoreOpen(store.open, store.close);
         return { ...store, distance: dist, driveTime, isOpen };
       });
@@ -297,7 +297,7 @@
               </span>
             </div>
             <p style="margin: 5px 0; font-size: 0.95rem;">
-              📍 <strong>${store.distance.toFixed(1)} km</strong> away (~${store.driveTime} min drive in normal conditions)
+              📍 <strong>${store.distance.toFixed(1)} km</strong> away (~${store.driveTime} min drive)
             </p>
             <a class="nav-btn" href="${mapsUrl}" target="_blank">Get Directions 🚗</a>
           </div>
